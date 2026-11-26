@@ -6,6 +6,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -117,5 +118,101 @@ func TestPrintNFODiffEmpty(t *testing.T) {
 	printNFODiff(&buf, "movie.nfo", "")
 	if buf.Len() != 0 {
 		t.Errorf("empty diff printed %q", buf.String())
+	}
+}
+
+func TestFindFFprobeExplicit(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "custom-ffprobe.exe")
+	if err := os.WriteFile(path, []byte("stub"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	got, err := findFFprobe(path)
+	if err != nil || got != path {
+		t.Fatalf("findFFprobe = %q, %v; want %q", got, err, path)
+	}
+}
+
+func TestFindFFprobeBesideExecutable(t *testing.T) {
+	dir := t.TempDir()
+	name := "ffprobe"
+	if runtime.GOOS == "windows" {
+		name = "ffprobe.exe"
+	}
+	want := filepath.Join(dir, name)
+	if err := os.WriteFile(want, []byte("stub"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+
+	oldExecutablePath, oldLookPath := executablePath, lookPath
+	t.Cleanup(func() {
+		executablePath = oldExecutablePath
+		lookPath = oldLookPath
+	})
+	executablePath = func() (string, error) {
+		return filepath.Join(dir, "IcedReel.exe"), nil
+	}
+	lookPath = func(string) (string, error) {
+		t.Fatal("同目录存在 ffprobe 时不应再查 PATH")
+		return "", nil
+	}
+
+	got, err := findFFprobe("")
+	if err != nil {
+		t.Fatalf("findFFprobe: %v", err)
+	}
+	if got != want {
+		t.Fatalf("findFFprobe = %q, want %q", got, want)
+	}
+}
+
+func TestFindFFprobeFallsBackToPath(t *testing.T) {
+	dir := t.TempDir()
+	want := filepath.Join(dir, "bin", "ffprobe.exe")
+
+	oldExecutablePath, oldLookPath := executablePath, lookPath
+	t.Cleanup(func() {
+		executablePath = oldExecutablePath
+		lookPath = oldLookPath
+	})
+	executablePath = func() (string, error) {
+		return filepath.Join(dir, "IcedReel.exe"), nil
+	}
+	lookPath = func(name string) (string, error) {
+		if name != "ffprobe" {
+			t.Fatalf("LookPath(%q), want ffprobe", name)
+		}
+		return want, nil
+	}
+
+	got, err := findFFprobe("")
+	if err != nil {
+		t.Fatalf("findFFprobe: %v", err)
+	}
+	if got != want {
+		t.Fatalf("findFFprobe = %q, want %q", got, want)
+	}
+}
+
+func TestFindFFprobeMissing(t *testing.T) {
+	dir := t.TempDir()
+
+	oldExecutablePath, oldLookPath := executablePath, lookPath
+	t.Cleanup(func() {
+		executablePath = oldExecutablePath
+		lookPath = oldLookPath
+	})
+	executablePath = func() (string, error) {
+		return filepath.Join(dir, "IcedReel.exe"), nil
+	}
+	lookPath = func(string) (string, error) {
+		return "", errors.New("not found")
+	}
+
+	_, err := findFFprobe("")
+	if err == nil || !strings.Contains(err.Error(), "找不到 ffprobe") {
+		t.Fatalf("findFFprobe error = %v", err)
+	}
+	if !strings.Contains(err.Error(), "同目录") {
+		t.Errorf("error should mention executable directory: %v", err)
 	}
 }

@@ -86,6 +86,8 @@ icedreel scrape [选项] <视频文件>
 | `--ffprobe <path>` | ffprobe.exe 路径                         |
 | `-h, --help`       | 帮助                                     |
 
+ffprobe 查找顺序：`--ffprobe` → `IcedReel.exe` 同目录的 `ffprobe.exe` → `PATH`。把 `ffprobe.exe` 放在 `IcedReel.exe` 旁边，移动目录或从快捷方式启动也能找到。
+
 示例：
 
 ```powershell
@@ -235,7 +237,7 @@ go test ./...
 - Wikidata 中英标签优先级、最早年份、TMDB/豆瓣 ID、Wikipedia 标题兜底、Wikidata ID
 - TMDB `find` / search / movie / tv / external_ids 的 httptest 模拟
 - IMDb `find` 同时返回电影/剧集时按完整度选择（票数、热度、海报、简介）
-- 发布文件名解析、剧集季/集解析、ffprobe JSON 解析、语言/编码/声道/时长格式化
+- 发布文件名解析、剧集季/集解析、ffprobe 查找顺序（显式 / 同目录 / PATH）、ffprobe JSON 解析、语言/编码/声道/时长格式化
 - 音轨显示（语言英文名、标题、序号、Default、编码、采样率、声道、位深）
 - 字幕显示（语言英文名 + 每条标题，逐条不归并）
 - 电影 NFO 生成、logicalname、streamdetails 映射、unified diff

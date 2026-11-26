@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -276,6 +277,11 @@ func resolveScrapeMetadata(ctx context.Context, tmdb *tmdbClient, wd *wikidataCl
 	return meta, nil
 }
 
+var (
+	executablePath = os.Executable
+	lookPath       = exec.LookPath
+)
+
 func findFFprobe(explicit string) (string, error) {
 	if explicit != "" {
 		if _, err := os.Stat(explicit); err != nil {
@@ -283,11 +289,31 @@ func findFFprobe(explicit string) (string, error) {
 		}
 		return explicit, nil
 	}
-	path, err := exec.LookPath("ffprobe")
+	if path := ffprobeBesideExecutable(); path != "" {
+		return path, nil
+	}
+	path, err := lookPath("ffprobe")
 	if err != nil {
-		return "", fmt.Errorf("找不到 ffprobe；请安装 FFmpeg 或用 --ffprobe 指定")
+		return "", fmt.Errorf("找不到 ffprobe；请安装 FFmpeg、把 ffprobe 放到 IcedReel.exe 同目录，或用 --ffprobe 指定")
 	}
 	return path, nil
+}
+
+func ffprobeBesideExecutable() string {
+	exe, err := executablePath()
+	if err != nil || exe == "" {
+		return ""
+	}
+	name := "ffprobe"
+	if runtime.GOOS == "windows" {
+		name = "ffprobe.exe"
+	}
+	path := filepath.Join(filepath.Dir(exe), name)
+	info, err := os.Stat(path)
+	if err != nil || !info.Mode().IsRegular() {
+		return ""
+	}
+	return path
 }
 
 var videoExts = map[string]bool{
@@ -314,6 +340,8 @@ IMDb / TMDB 同时返回电影和剧集时，按完整度选条目（票数 / �
   --douban <id>    豆瓣电影 id
   --ffprobe <path> ffprobe.exe 路径
   -h, --help       显示帮助
+
+ffprobe 查找顺序：--ffprobe → IcedReel.exe 同目录 → PATH。
 
 查询只用 --imdb / --douban；TTY 下缺 id 时会依次询问，反推不到豆瓣 id 时补问一次；TMDB 失败时询问是否重试；非交互模式必须显式提供。
 
