@@ -102,7 +102,7 @@ func TestBuildNFOAndWrite(t *testing.T) {
 	text := string(data)
 	for _, want := range []string{
 		`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`,
-		"<logicalname>肖申克的救赎_The Shawshank Redemption_(1994)_imdb-tt0111161_tmdb-278_douban-1292052</logicalname>",
+		"<logicalname>肖申克的救赎 (The Shawshank Redemption) (1994) {imdb-tt0111161} {tmdb-278} {douban-1292052}</logicalname>",
 		"<title>肖申克的救赎</title>",
 		"<premiered>1994-10-14</premiered>",
 		"<runtime>142</runtime>",

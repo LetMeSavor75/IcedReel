@@ -11,7 +11,7 @@
 示例：
 
 ```
-目录：肖申克的救赎_The Shawshank Redemption_(1994)_imdb-tt0111161_tmdb-278_douban-1292052
+目录：肖申克的救赎 (The Shawshank Redemption) (1994) {imdb-tt0111161} {tmdb-278} {douban-1292052}
 文件：www.example.com@The.Shawshank.Redemption.1994.UHD.BluRay.REMUX.2160p.HEVC.DTS-HD.MA.5.1.mkv
 ```
 
@@ -53,7 +53,7 @@ icedreel name --douban 1292052 -y
   douban-id [1292052]:
 
 确认生成？[Y/n]:
-目录名: 肖申克的救赎_The Shawshank Redemption_(1994)_imdb-tt0111161_tmdb-278_douban-1292052
+目录名: 肖申克的救赎 (The Shawshank Redemption) (1994) {imdb-tt0111161} {tmdb-278} {douban-1292052}
 ```
 
 - 有 IMDb 就立刻查 TMDB，不会先拦着问豆瓣。
@@ -66,10 +66,10 @@ icedreel name --douban 1292052 -y
 输出格式：
 
 ```
-中文_English_(年份)_imdb-tt..._tmdb-..._douban-...
+中文 (English) (年份) {imdb-tt...} {tmdb-...} {douban-...}
 ```
 
-缺失的段整段省略。ID 顺序固定为 IMDb、TMDB、豆瓣。
+标题中英都有时写作 `中文 (English)`；只有一种语言时直接写该标题，不加括号。缺失的段整段省略。ID 顺序固定为 IMDb、TMDB、豆瓣。
 
 ## scrape
 
@@ -96,7 +96,7 @@ icedreel scrape "D:\Movies\...\www.example.com@The.Shawshank.Redemption.1994.UHD
 
 ```text
 文件:   www.example.com@The.Shawshank.Redemption.1994.UHD.BluRay.REMUX.2160p.HEVC.DTS-HD.MA.5.1.nfo
-逻辑名: 肖申克的救赎_The Shawshank Redemption_(1994)_imdb-tt0111161_tmdb-278_douban-1292052
+逻辑名: 肖申克的救赎 (The Shawshank Redemption) (1994) {imdb-tt0111161} {tmdb-278} {douban-1292052}
 标题:   肖申克的救赎
 原名:   The Shawshank Redemption
 年份:   1994

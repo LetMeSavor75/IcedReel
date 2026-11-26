@@ -407,7 +407,7 @@ func TestShowTVShowNFO(t *testing.T) {
 
 func TestLoadSiblingTVShowLogicalName(t *testing.T) {
 	dir := t.TempDir()
-	showPath := filepath.Join(dir, "Show_2026_imdb-tt1.nfo")
+	showPath := filepath.Join(dir, "Show (2026) {imdb-tt1}.nfo")
 	data, err := renderNFO(&nfoTVShow{Title: "测试剧", TmdbID: 42})
 	if err != nil {
 		t.Fatal(err)

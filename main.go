@@ -61,7 +61,7 @@ func printUsage(w io.Writer) {
   rank               视频质量排名（后续）
 
 命名格式：
-  中文_English_(年份)_imdb-tt0111161_tmdb-278_douban-1292052
+  肖申克的救赎 (The Shawshank Redemption) (1994) {imdb-tt0111161} {tmdb-278} {douban-1292052}
   name 只生成逻辑目录名；时长/音轨/字幕/编码由 scrape 处理。
 `)
 }

@@ -35,7 +35,7 @@ func TestParseTitleBindingsFull(t *testing.T) {
 		meta.WikidataID != "Q172241" {
 		t.Fatalf("unexpected metadata: %+v", meta)
 	}
-	want := "肖申克的救赎_The Shawshank Redemption_(1994)_imdb-tt0111161_tmdb-278_douban-1292052"
+	want := "肖申克的救赎 (The Shawshank Redemption) (1994) {imdb-tt0111161} {tmdb-278} {douban-1292052}"
 	if got := BuildName(meta); got != want {
 		t.Fatalf("BuildName = %q, want %q", got, want)
 	}
@@ -77,7 +77,7 @@ func TestParseEnglishOnlyDropsChinese(t *testing.T) {
 	if meta == nil || meta.TitleZh != "" || meta.TitleEn != "Foo" {
 		t.Fatalf("got %+v", meta)
 	}
-	if got := BuildName(meta); got != "Foo_imdb-tt9" {
+	if got := BuildName(meta); got != "Foo {imdb-tt9}" {
 		t.Fatalf("BuildName = %q", got)
 	}
 }
@@ -95,7 +95,7 @@ func TestParseUsesFallbackIDs(t *testing.T) {
 	if meta.ImdbID != "tt123" || meta.DoubanID != "456" {
 		t.Fatalf("got %+v", meta)
 	}
-	if got := BuildName(meta); got != "Foo_imdb-tt123_douban-456" {
+	if got := BuildName(meta); got != "Foo {imdb-tt123} {douban-456}" {
 		t.Fatalf("BuildName = %q", got)
 	}
 }
@@ -121,7 +121,7 @@ func TestParseTmdbIDAndArticleTitles(t *testing.T) {
 		meta.WikidataID != "Q12345" {
 		t.Fatalf("unexpected metadata: %+v", meta)
 	}
-	want := "肖申克的救赎_The Shawshank Redemption_(1994)_imdb-tt0111161_tmdb-278_douban-1292052"
+	want := "肖申克的救赎 (The Shawshank Redemption) (1994) {imdb-tt0111161} {tmdb-278} {douban-1292052}"
 	if got := BuildName(meta); got != want {
 		t.Fatalf("BuildName = %q, want %q", got, want)
 	}

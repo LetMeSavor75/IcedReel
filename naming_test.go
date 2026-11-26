@@ -14,7 +14,22 @@ func TestBuildNameFull(t *testing.T) {
 		Year:     "1994",
 		DoubanID: "1292052",
 	}
-	want := "肖申克的救赎_The Shawshank Redemption_(1994)_imdb-tt0111161_tmdb-278_douban-1292052"
+	want := "肖申克的救赎 (The Shawshank Redemption) (1994) {imdb-tt0111161} {tmdb-278} {douban-1292052}"
+	if got := BuildName(meta); got != want {
+		t.Fatalf("BuildName:\n got  %q\n want %q", got, want)
+	}
+}
+
+func TestBuildNameEyesWideShut(t *testing.T) {
+	meta := &BilingualTitle{
+		ImdbID:   "tt0120663",
+		TmdbID:   345,
+		TitleEn:  "Eyes Wide Shut",
+		TitleZh:  "大开眼戒",
+		Year:     "1999",
+		DoubanID: "1300275",
+	}
+	want := "大开眼戒 (Eyes Wide Shut) (1999) {imdb-tt0120663} {tmdb-345} {douban-1300275}"
 	if got := BuildName(meta); got != want {
 		t.Fatalf("BuildName:\n got  %q\n want %q", got, want)
 	}
@@ -30,7 +45,7 @@ func TestBuildNameIgnoresRuntime(t *testing.T) {
 		DoubanID:       "1292052",
 		RuntimeMinutes: 142,
 	}
-	want := "肖申克的救赎_The Shawshank Redemption_(1994)_imdb-tt0111161_tmdb-278_douban-1292052"
+	want := "肖申克的救赎 (The Shawshank Redemption) (1994) {imdb-tt0111161} {tmdb-278} {douban-1292052}"
 	if got := BuildName(meta); got != want {
 		t.Fatalf("BuildName:\n got  %q\n want %q", got, want)
 	}
@@ -42,7 +57,7 @@ func TestBuildNameMissingOptional(t *testing.T) {
 		TitleEn: "Foo",
 		Year:    "2020",
 	}
-	want := "Foo_(2020)_imdb-tt9"
+	want := "Foo (2020) {imdb-tt9}"
 	if got := BuildName(meta); got != want {
 		t.Fatalf("got %q, want %q", got, want)
 	}
@@ -55,7 +70,7 @@ func TestBuildNameEnglishOnly(t *testing.T) {
 		Year:     "2021",
 		DoubanID: "456",
 	}
-	want := "Foo_(2021)_imdb-tt123_douban-456"
+	want := "Foo (2021) {imdb-tt123} {douban-456}"
 	if got := BuildName(meta); got != want {
 		t.Fatalf("got %q, want %q", got, want)
 	}
@@ -122,7 +137,7 @@ func TestLooksMostlyLatin(t *testing.T) {
 
 func TestFormatTitle(t *testing.T) {
 	cases := []struct{ zh, en, want string }{
-		{"乙", "A", "乙_A"},
+		{"乙", "A", "乙 (A)"},
 		{"", "A", "A"},
 		{"乙", "", "乙"},
 		{"Same", "Same", "Same"},
@@ -137,7 +152,7 @@ func TestFormatTitle(t *testing.T) {
 func TestBuildNameNoEmptySegments(t *testing.T) {
 	meta := &BilingualTitle{TitleEn: "Foo"}
 	got := BuildName(meta)
-	if strings.Contains(got, "__") || strings.HasSuffix(got, "_") {
+	if strings.Contains(got, "  ") || strings.HasSuffix(got, " ") {
 		t.Errorf("unexpected separators: %q", got)
 	}
 }

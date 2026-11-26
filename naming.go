@@ -30,7 +30,7 @@ type BilingualTitle struct {
 }
 
 // BuildName builds the logical directory name:
-// 中文_English_(年份)_imdb-tt..._tmdb-..._douban-...
+// 中文 (English) (年份) {imdb-tt...} {tmdb-...} {douban-...}
 // It describes the work, not a specific file. Duration/audio/subtitle belong to scrape.
 func BuildName(meta *BilingualTitle) string {
 	if meta == nil {
@@ -45,15 +45,15 @@ func BuildName(meta *BilingualTitle) string {
 		parts = append(parts, "("+year+")")
 	}
 	if id := cleanID(meta.ImdbID); id != "" {
-		parts = append(parts, "imdb-"+id)
+		parts = append(parts, "{imdb-"+id+"}")
 	}
 	if meta.TmdbID > 0 {
-		parts = append(parts, fmt.Sprintf("tmdb-%d", meta.TmdbID))
+		parts = append(parts, fmt.Sprintf("{tmdb-%d}", meta.TmdbID))
 	}
 	if id := cleanID(meta.DoubanID); id != "" {
-		parts = append(parts, "douban-"+id)
+		parts = append(parts, "{douban-"+id+"}")
 	}
-	return strings.Join(parts, "_")
+	return strings.Join(parts, " ")
 }
 
 func formatTitle(zh, en string) string {
@@ -67,7 +67,7 @@ func formatTitle(zh, en string) string {
 	case strings.EqualFold(zh, en):
 		return zh
 	default:
-		return zh + "_" + en
+		return zh + " (" + en + ")"
 	}
 }
 
